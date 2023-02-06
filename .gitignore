@@ -1,0 +1,10 @@
+**/.cache
+**/build
+**/.ninja_log
+**/compile_commands.json
+**/__pycache__
+gtamfx/include/GL
+gtamfx/include/KHR
+gtamfx/include/stb_image.h
+gtamfx/src/gl3w.c
+gtamfx/platform.ninja

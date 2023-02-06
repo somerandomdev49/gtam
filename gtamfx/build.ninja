@@ -1,0 +1,29 @@
+include platform.ninja
+
+cflags = -Iinclude -Wall -Wpedantic -Wno-nested-anon-types -fdiagnostics-color -fPIC
+
+rule cc
+  command = clang -c $in -o $out -std=c17 $cflags -MD -MF $out.d
+  depfile = $out.d
+
+rule cxx
+  command = clang++ -c $in -o $out -std=c++20 $cflags -MD -MF $out.d
+  depfile = $out.d
+
+rule ld
+  command = clang++ $in -o $out -lglfw
+
+rule ldso
+  command = clang++ -shared $in -o $out -lglfw
+
+build build/cwrap.cpp.o: cxx src/cwrap.cpp
+build build/gtamfx.cpp.o: cxx src/gtamfx.cpp
+build build/gl3w.c.o: cc src/gl3w.c
+build build/test.cpp.o: cxx src/test.cpp
+
+build build/main: ld build/gtamfx.cpp.o build/gl3w.c.o build/test.cpp.o build/cwrap.cpp.o
+build build/libgtamfx.so: ldso build/gtamfx.cpp.o build/gl3w.c.o build/test.cpp.o build/cwrap.cpp.o
+
+build lib: phony build/libgtamfx.so
+build test: phony build/main
+default lib
