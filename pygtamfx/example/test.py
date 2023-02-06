@@ -1,4 +1,4 @@
-from pygtamfx.pygtamfx import *
+from ..pygtamfx import *
 import glm
 
 vertex_source = """
@@ -47,7 +47,7 @@ void main() {
 window = Window(glm.ivec2(800, 600), "hi!")
 window.init()
 
-texture = window.new_texture("image.png")
+texture = window.new_texture("example/image.png")
 shader = window.new_shader(vertex_source, fragment_source, 4)
 
 sprite = window.new_sprite(texture, shader)

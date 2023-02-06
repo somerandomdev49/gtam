@@ -49,7 +49,7 @@ int main() {
     window.init();
 
     gtamfx::Shader *shader = window.newShader(vertexShaderSource, fragmentShaderSource, 4);
-    gtamfx::Texture *texture = window.newTexture("image.png");
+    gtamfx::Texture *texture = window.newTexture("example/image.png");
     gtamfx::Sprite *sprite = window.newSprite(texture, shader);
     const float speed = 140.0f;
 
