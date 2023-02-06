@@ -3,7 +3,7 @@ Tiny C++ OpenGL rendering engine with C and Python bindings.
 
 ## Building
 
-> Requirements: clang, ninja, python (>2.7 or >=3)
+> Requirements: `clang`, `ninja`, `python (>2.7 or >=3)`
 
 1. Run `<python> config.py` (once)
 2. Building
@@ -19,9 +19,9 @@ The bindings are implemented using `ctypes` and loading a shared library (TODO: 
 
 ### Example
 
-> Requirements: be in the repository root folder
+> Requirements: be in the repository root folder, `python (>=3.6)`
 
-1. Run `<python> example/test.py`
+1. Run `<python> -m pygtamfx.example.test` (I hate python modules)
 2. Enjoy
 
 # TODO
