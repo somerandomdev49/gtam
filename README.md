@@ -11,7 +11,7 @@ Tiny C++ OpenGL rendering engine with C and Python bindings.
    - Or run `ninja -C gtamfx test` (to build C++ example, equivalent to python example)
 2. Using
    - Make your game in C/C++ or use the python bindings!
-   - Or run `./gtamfx/build/test` to see example (notice the relative path)
+   - Or run `./gtamfx/build/main` to see example (notice the relative path)
 
 ## Python bindings
 
