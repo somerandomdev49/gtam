@@ -16,6 +16,9 @@ rule ld
 rule ldso
   command = clang++ -shared $in -o $out -lglfw
 
+rule install
+  command = install build/libgtamfx.so /usr/local/lib/libgtamfx.so
+
 build build/cwrap.cpp.o: cxx src/cwrap.cpp
 build build/gtamfx.cpp.o: cxx src/gtamfx.cpp
 build build/gl3w.c.o: cc src/gl3w.c
@@ -26,4 +29,5 @@ build build/libgtamfx.so: ldso build/gtamfx.cpp.o build/gl3w.c.o build/test.cpp.
 
 build lib: phony build/libgtamfx.so
 build test: phony build/main
+build install: install build/libgtamfx.so
 default lib

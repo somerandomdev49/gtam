@@ -141,7 +141,7 @@ class _CCamera(_ctypes.Structure):
     ]
 
 
-_C = _ctypes.CDLL("gtamfx/build/libgtamfx.so")
+_C = _ctypes.CDLL("libgtamfx.so")
 
 _C.gtamCreateWindow.argtypes = [_CVec2i, _ctypes.c_char_p]
 _C.gtamCreateWindow.restype = _CWindow
