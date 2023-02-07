@@ -14,7 +14,7 @@ class _CVec2(_ctypes.Structure):
     _fields_ = [("x", _ctypes.c_float), ("y", _ctypes.c_float)]
 
     def to_glm(self) -> glm.vec2:
-        return glm.vec2(self.x, self.y)
+        return glm.vec2(self.x, self.y)  # type: ignore
 
     def set_from_glm(self, v: glm.vec2):
         self.x = _ctypes.c_float(v.x)
@@ -25,7 +25,7 @@ class _CVec2i(_ctypes.Structure):
     _fields_ = [("x", _ctypes.c_int), ("y", _ctypes.c_int)]
 
     def to_glm(self) -> glm.ivec2:
-        return glm.ivec2(self.x, self.y)
+        return glm.ivec2(self.x, self.y)  # type: ignore
 
     def set_from_glm(self, v: glm.ivec2):
         self.x = _ctypes.c_int(v.x)
@@ -36,7 +36,7 @@ class _CVec3(_ctypes.Structure):
     _fields_ = [("x", _ctypes.c_float), ("y", _ctypes.c_float), ("z", _ctypes.c_float)]
 
     def to_glm(self) -> glm.vec3:
-        return glm.vec3(self.x, self.y, self.z)
+        return glm.vec3(self.x, self.y, self.z)  # type: ignore
 
     def set_from_glm(self, v: glm.vec3):
         self.x = _ctypes.c_float(v.x)
@@ -53,7 +53,7 @@ class _CVec4(_ctypes.Structure):
     ]
 
     def to_glm(self) -> glm.vec4:
-        return glm.vec4(self.x, self.y, self.w)
+        return glm.vec4(self.x, self.y, self.w)  # type: ignore
 
     def set_from_glm(self, v: glm.vec4):
         self.x = _ctypes.c_float(v.x)
@@ -71,7 +71,7 @@ class _CQuat(_ctypes.Structure):
     ]
 
     def to_glm(self) -> glm.quat:
-        return glm.quat(self.w, self.x, self.y, self.z)
+        return glm.quat(self.w, self.x, self.y, self.z)  # type: ignore
 
     def set_from_glm(self, v: glm.quat):
         self.w = _ctypes.c_float(v.w)
@@ -146,6 +146,35 @@ try:
 except OSError:
     _C = _ctypes.CDLL("/usr/local/lib/libgtamfx.so")
 
+_GTAM_ERROR_NONE = 0
+_GTAM_ERROR_GLFW_FAILED_INIT = 1
+_GTAM_ERROR_GLFW_FAILED_CREATE_WINDOW = 2
+_GTAM_ERROR_GL3W_FAILED_INIT = 3
+_GTAM_ERROR_GL3W_BAD_VERSION = 4
+_GTAM_ERROR_TEXTURE_LOAD_FAIL = 5
+_GTAM_ERROR_SHADER_LOAD_FAIL = 6
+
+_GTAM_ERROR_STRINGS = [
+    "None",
+    "Failed to initialize GLFW",
+    "Failed to create window",
+    "Failed to initialize GL3W",
+    "Bad version reported by GL3W",
+    "Failed to load texture",
+    "Failed to load shader",
+]
+
+
+def _gtam_error_to_text(err: int) -> str:
+    if 0 <= err < len(_GTAM_ERROR_STRINGS):
+        return _GTAM_ERROR_STRINGS[err]
+    return "Unknown error"
+
+
+_C.gtamGerError.argtypes = []
+_C.gtamGerError.restype = _ctypes.c_int
+_C.gtamGerErrorMessage.argtypes = []
+_C.gtamGerErrorMessage.restype = _ctypes.c_char_p
 _C.gtamCreateWindow.argtypes = [_CVec2i, _ctypes.c_char_p]
 _C.gtamCreateWindow.restype = _CWindow
 _C.gtamDestroyWindow.argtypes = [_CWindow]
@@ -193,7 +222,7 @@ _C.gtamWindowGetAspectRatio.restype = _ctypes.c_float
 
 
 class Texture:
-    def __init__(self, handle: _ctypes.POINTER(_CTexture)):
+    def __init__(self, handle: _ctypes._Pointer[_CTexture]):
         self._handle = handle
 
     @property
@@ -206,7 +235,7 @@ class Texture:
 
 
 class Shader:
-    def __init__(self, handle: _ctypes.POINTER(_CShader)):
+    def __init__(self, handle: _ctypes._Pointer[_CShader]):
         self._handle = handle
 
     @property
@@ -228,20 +257,20 @@ class TextureView:
 
     @property
     def position(self) -> glm.vec2:
-        return glm.vec2(self._handle[0].position.x, self._handle[0].position.y)
+        return glm.vec2(self._handle.position.x, self._handle.position.y)
 
     @position.setter
     def position(self, value: glm.vec2):
-        self._handle[0].position.x = _ctypes.c_float(value.x)
-        self._handle[0].position.y = _ctypes.c_float(value.y)
+        self._handle.position.x = _ctypes.c_float(value.x)
+        self._handle.position.y = _ctypes.c_float(value.y)
 
     @property
     def scale(self) -> glm.vec2:
-        return self._handle[0].scale.to_glm()
+        return self._handle.scale.to_glm()
 
     @scale.setter
     def scale(self, value: glm.vec2):
-        self._handle[0].scale.set_from_glm(value)
+        self._handle.scale.set_from_glm(value)
 
     @property
     def source(self):
@@ -253,7 +282,7 @@ class TextureView:
 
 
 class Sprite:
-    def __init__(self, handle: _ctypes.POINTER(_CSprite)):
+    def __init__(self, handle: _ctypes._Pointer[_CSprite]):
         self._handle = handle
 
     @property
@@ -306,9 +335,9 @@ class Sprite:
 
 
 class CameraType(_enum.IntEnum):
+    UNKNOWN = -1
     ORTHOGRAPHIC = 0
     PERSPECTIVE = 1
-    UNKNOWN = -1
 
 
 class PerspectiveCamera_:
@@ -362,7 +391,7 @@ class OrthographicCamera_:
 
 
 class Camera:
-    def __init__(self, handle: _ctypes.POINTER(_CCamera)):
+    def __init__(self, handle: _ctypes._Pointer[_CCamera]):
         self._handle = handle
 
     @property
@@ -372,7 +401,7 @@ class Camera:
             if self._handle[0].type == 0
             else CameraType.PERSPECTIVE
             if self._handle[0].type == 1
-            else CameraType.UNKOWN
+            else CameraType.UNKNOWN
         )
 
     @type.setter
@@ -541,12 +570,21 @@ class Window:
         self._handle = _C.gtamCreateWindow(
             _CVec2i(size.x, size.y), title.encode("utf-8")
         )
+        self._check_errors()
+
+    def _check_errors(self):
+        if _C.gtamGetError() != _GTAM_ERROR_NONE:
+            raise Exception(
+                f"{_gtam_error_to_text(_C.gtamGetError())}: {_C.gtamGetErrorMessage()}"
+            )
 
     def init(self):
         _C.gtamInitWindow(self._handle)
+        self._check_errors()
 
     def deinit(self):
         _C.gtamDeinitWindow(self._handle)
+        self._check_errors()
 
     def close(self):
         _C.gtamCloseWindow(self._handle)
@@ -556,6 +594,7 @@ class Window:
 
     def update(self, depth: bool = False):
         _C.gtamUpdateWindow(self._handle, 1 if depth else 0)
+        self._check_errors()
 
     def is_key_down(self, key: KeyCode) -> bool:
         return not not _C.gtamWindowIsKeyDown(self._handle, key.value)
@@ -588,6 +627,7 @@ class Window:
 
     def new_texture(self, path: str) -> Texture:
         ptr = _C.gtamWindowNewTexture(self._handle, path.encode("utf-8"))
+        self._check_errors()
         return Texture(ptr)
 
     def new_sprite(self, texture: Texture, shader: Shader) -> Sprite:
@@ -598,10 +638,12 @@ class Window:
         ptr = _C.gtamWindowNewShader(
             self._handle, vertex.encode("utf-8"), fragment.encode("utf-8"), vertex_count
         )
+        self._check_errors()
         return Shader(ptr)
 
     def new_camera(self, type: CameraType) -> Camera:
         ptr = _C.gtamWindowNewCamera(self._handle, type.value)
+        self._check_errors()
         return Camera(ptr)
 
     def del_texture(self, texture: Texture):

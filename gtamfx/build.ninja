@@ -1,6 +1,6 @@
 include platform.ninja
 
-cflags = -Iinclude -Wall -Wpedantic -Wno-nested-anon-types -fdiagnostics-color -fPIC
+cflags = -Iinclude -Wall -Wpedantic -Wno-nested-anon-types -fdiagnostics-color -fPIC -g
 
 rule cc
   command = clang -c $in -o $out -std=c17 $cflags -MD -MF $out.d
