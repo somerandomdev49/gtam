@@ -2,12 +2,20 @@ import ctypes as _ctypes
 import shutil as _shutil
 import os.path as _path
 import enum as _enum
+import typing
 
 try:
     import glm as glm
 except ImportError:
     print("Please install PyGLM.")
     exit(1)
+
+if typing.TYPE_CHECKING:
+    _Ptr = _ctypes._Pointer
+else:
+    class _Ptr:
+        def __class_getitem__(self, *_):
+            return None
 
 
 class _CVec2(_ctypes.Structure):
@@ -171,10 +179,10 @@ def _gtam_error_to_text(err: int) -> str:
     return "Unknown error"
 
 
-_C.gtamGerError.argtypes = []
-_C.gtamGerError.restype = _ctypes.c_int
-_C.gtamGerErrorMessage.argtypes = []
-_C.gtamGerErrorMessage.restype = _ctypes.c_char_p
+_C.gtamGetError.argtypes = []
+_C.gtamGetError.restype = _ctypes.c_int
+_C.gtamGetErrorMessage.argtypes = []
+_C.gtamGetErrorMessage.restype = _ctypes.c_char_p
 _C.gtamCreateWindow.argtypes = [_CVec2i, _ctypes.c_char_p]
 _C.gtamCreateWindow.restype = _CWindow
 _C.gtamDestroyWindow.argtypes = [_CWindow]
@@ -222,7 +230,7 @@ _C.gtamWindowGetAspectRatio.restype = _ctypes.c_float
 
 
 class Texture:
-    def __init__(self, handle: _ctypes._Pointer[_CTexture]):
+    def __init__(self, handle: _Ptr[_CTexture]):
         self._handle = handle
 
     @property
@@ -235,7 +243,7 @@ class Texture:
 
 
 class Shader:
-    def __init__(self, handle: _ctypes._Pointer[_CShader]):
+    def __init__(self, handle: _Ptr[_CShader]):
         self._handle = handle
 
     @property
@@ -282,7 +290,7 @@ class TextureView:
 
 
 class Sprite:
-    def __init__(self, handle: _ctypes._Pointer[_CSprite]):
+    def __init__(self, handle: _Ptr[_CSprite]):
         self._handle = handle
 
     @property
@@ -391,7 +399,7 @@ class OrthographicCamera_:
 
 
 class Camera:
-    def __init__(self, handle: _ctypes._Pointer[_CCamera]):
+    def __init__(self, handle: _Ptr[_CCamera]):
         self._handle = handle
 
     @property
@@ -572,10 +580,11 @@ class Window:
         )
         self._check_errors()
 
-    def _check_errors(self):
+    def _check_errors(self, msg: str | None = None):
         if _C.gtamGetError() != _GTAM_ERROR_NONE:
             raise Exception(
-                f"{_gtam_error_to_text(_C.gtamGetError())}: {_C.gtamGetErrorMessage()}"
+                f"{_gtam_error_to_text(_C.gtamGetError())}: {_C.gtamGetErrorMessage().decode('utf-8')}"
+                + (" " + msg if msg is not None else "")
             )
 
     def init(self):
@@ -627,7 +636,7 @@ class Window:
 
     def new_texture(self, path: str) -> Texture:
         ptr = _C.gtamWindowNewTexture(self._handle, path.encode("utf-8"))
-        self._check_errors()
+        self._check_errors(path)
         return Texture(ptr)
 
     def new_sprite(self, texture: Texture, shader: Shader) -> Sprite:
@@ -638,7 +647,7 @@ class Window:
         ptr = _C.gtamWindowNewShader(
             self._handle, vertex.encode("utf-8"), fragment.encode("utf-8"), vertex_count
         )
-        self._check_errors()
+        self._check_errors(f"vertex: {vertex}, fragment: {fragment}, vertex_count: {vertex_count}")
         return Shader(ptr)
 
     def new_camera(self, type: CameraType) -> Camera:

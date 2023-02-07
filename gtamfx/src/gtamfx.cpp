@@ -109,7 +109,7 @@ namespace gtamfx {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
     impl_->window = glfwCreateWindow(size.x, size.y, title.c_str(), nullptr, nullptr);
@@ -120,7 +120,7 @@ namespace gtamfx {
     // does nothing that stops us from calling this function multiple times
     int res = gl3wInit2(&glfwGetProcAddress);
     
-    if(res == GL3W_ERROR_INIT) throw Exception{ ExceptionType::Gl3wFailedInit, "?" };
+    if(res < 0) throw Exception{ ExceptionType::Gl3wFailedInit, "?" };
 
     struct { GLint major, minor; } version;
     glGetIntegerv(GL_MAJOR_VERSION, &version.major);
