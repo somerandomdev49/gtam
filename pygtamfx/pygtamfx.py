@@ -141,7 +141,10 @@ class _CCamera(_ctypes.Structure):
     ]
 
 
-_C = _ctypes.CDLL("libgtamfx.so")
+try:
+    _C = _ctypes.CDLL("libgtamfx.so")
+except OSError:
+    _C = _ctypes.CDLL("/usr/local/lib/libgtamfx.so")
 
 _C.gtamCreateWindow.argtypes = [_CVec2i, _ctypes.c_char_p]
 _C.gtamCreateWindow.restype = _CWindow
