@@ -50,7 +50,7 @@ LIB_GLFW_PREDEFINED = {
         "-Wl,-w",
     ],
     "win": ["-lglfw3"],
-    "linux": ["-lglfw3"],
+    "linux": ["-lglfw"],
 }
 
 
