@@ -13,16 +13,36 @@
 extern "C" {
 #endif
 
-struct GtamVec2 { float x, y; };
-struct GtamVec2i { int x, y; };
-struct GtamVec2d { double x, y; };
-struct GtamVec3 { float x, y, z; };
-struct GtamVec3i { int x, y, z; };
-struct GtamVec3d { double x, y, z; };
-struct GtamVec4 { float x, y, z, w; };
-struct GtamVec4i { int x, y, z, w; };
-struct GtamVec4d { double x, y, z, w; };
-struct GtamQuat { double w, x, y, z; };
+struct GtamVec2 {
+  float x, y;
+};
+struct GtamVec2i {
+  int x, y;
+};
+struct GtamVec2d {
+  double x, y;
+};
+struct GtamVec3 {
+  float x, y, z;
+};
+struct GtamVec3i {
+  int x, y, z;
+};
+struct GtamVec3d {
+  double x, y, z;
+};
+struct GtamVec4 {
+  float x, y, z, w;
+};
+struct GtamVec4i {
+  int x, y, z, w;
+};
+struct GtamVec4d {
+  double x, y, z, w;
+};
+struct GtamQuat {
+  double w, x, y, z;
+};
 
 typedef struct GtamWindow_T GtamWindow;
 
@@ -67,6 +87,7 @@ typedef struct GtamCamera_T {
 
     struct {
       struct GtamVec2 size;
+      float left, right, bottom, top;
     } orthographic;
   };
 } GtamCamera;
@@ -93,18 +114,23 @@ EXPORT void gtamDeinitWindow(GtamWindow *window);
 EXPORT float gtamWindowGetTime(GtamWindow *window);
 EXPORT int gtamWindowIsKeyDown(GtamWindow *window, int keycode);
 EXPORT int gtamWindowIsMouseDown(GtamWindow *window, int button);
-EXPORT void gtamWindowGetMousePosition(GtamWindow *window, struct GtamVec2 *position);
+EXPORT void gtamWindowGetMousePosition(GtamWindow *window,
+                                       struct GtamVec2 *position);
 EXPORT GtamTexture *gtamWindowNewTexture(GtamWindow *window, const char *path);
 EXPORT void gtamWindowDelTexture(GtamWindow *window, GtamTexture *texture);
-EXPORT GtamShader *gtamWindowNewShader(GtamWindow *window, const char *vertex, const char *fragment, size_t vertexCount);
+EXPORT GtamShader *gtamWindowNewShader(GtamWindow *window, const char *vertex,
+                                       const char *fragment,
+                                       size_t vertexCount);
 EXPORT void gtamWindowDelShader(GtamWindow *window, GtamShader *shader);
-EXPORT GtamSprite *gtamWindowNewSprite(GtamWindow *window, GtamTexture *texture, GtamShader *shader);
+EXPORT GtamSprite *gtamWindowNewSprite(GtamWindow *window, GtamTexture *texture,
+                                       GtamShader *shader);
 EXPORT void gtamWindowDelSprite(GtamWindow *window, GtamSprite *sprite);
 EXPORT GtamCamera *gtamWindowNewCamera(GtamWindow *window, int type);
 EXPORT void gtamWindowDelCamera(GtamWindow *window, GtamCamera *camera);
 EXPORT void gtamWindowSetActiveCamera(GtamWindow *window, GtamCamera *camera);
 EXPORT GtamCamera *gtamWindowGetActiveCamera(const GtamWindow *window);
-EXPORT void gtamWindowGetFramebufferSize(const GtamWindow *window, struct GtamVec2 *framebufferSize);
+EXPORT void gtamWindowGetFramebufferSize(const GtamWindow *window,
+                                         struct GtamVec2 *framebufferSize);
 EXPORT float gtamWindowGetAspectRatio(const GtamWindow *window);
 
 enum GtamKeyCode {

@@ -13,6 +13,7 @@ except ImportError:
 if typing.TYPE_CHECKING:
     _Ptr = _ctypes._Pointer
 else:
+
     class _Ptr:
         def __class_getitem__(self, *_):
             return None
@@ -130,6 +131,10 @@ class _CCameraOpts_Perspective_(_ctypes.Structure):
 class _CCameraOpts_Orthographic_(_ctypes.Structure):
     _fields_ = [
         ("size", _CVec2),
+        ("left", _ctypes.c_float),
+        ("right", _ctypes.c_float),
+        ("bottom", _ctypes.c_float),
+        ("top", _ctypes.c_float),
     ]
 
 
@@ -397,6 +402,38 @@ class OrthographicCamera_:
     def size(self, v: glm.vec2):
         self._handle.size.set_from_glm(v)
 
+    @property
+    def left(self) -> float:
+        return self._handle.left
+
+    @left.setter
+    def left(self, v: float):
+        self._handle.left = v
+
+    @property
+    def right(self) -> float:
+        return self._handle.right
+
+    @right.setter
+    def right(self, v: float):
+        self._handle.right = v
+
+    @property
+    def top(self) -> float:
+        return self._handle.top
+
+    @top.setter
+    def top(self, v: float):
+        self._handle.top = v
+
+    @property
+    def bottom(self) -> float:
+        return self._handle.bottom
+
+    @bottom.setter
+    def bottom(self, v: float):
+        self._handle.bottom = v
+
 
 class Camera:
     def __init__(self, handle: _Ptr[_CCamera]):
@@ -647,7 +684,9 @@ class Window:
         ptr = _C.gtamWindowNewShader(
             self._handle, vertex.encode("utf-8"), fragment.encode("utf-8"), vertex_count
         )
-        self._check_errors(f"vertex: {vertex}, fragment: {fragment}, vertex_count: {vertex_count}")
+        self._check_errors(
+            f"vertex: {vertex}, fragment: {fragment}, vertex_count: {vertex_count}"
+        )
         return Shader(ptr)
 
     def new_camera(self, type: CameraType) -> Camera:
