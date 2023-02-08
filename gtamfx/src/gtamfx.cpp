@@ -1,11 +1,13 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
+#include <algorithm>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 #include <glm/gtc/type_ptr.hpp>
 #include <gtamfx.hpp>
 #include <memory>
+#include <ranges>
 
 extern "C" {
 #define STB_IMAGE_IMPLEMENTATION
@@ -75,8 +77,8 @@ glm::mat4 computeTransformMatrix(const gtamfx::Sprite *sprite,
                                  const gtamfx::Camera *camera) {
   glm::mat4 model = glm::mat4(1.0f);
   model *= glm::translate(glm::mat4(1.0f), sprite->position);
-  model *= glm::scale(glm::mat4(1.0f), sprite->scale);
   model *= glm::mat4_cast(sprite->rotation);
+  model *= glm::scale(glm::mat4(1.0f), sprite->scale);
 
   glm::mat4 view = glm::mat4(1.0f);
   view *= glm::mat4_cast(glm::conjugate(camera->rotation));
@@ -157,6 +159,9 @@ void Window::init() {
 
   glGenVertexArrays(1, &impl_->vao);
   glBindVertexArray(impl_->vao);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Window::deinit() {
@@ -208,7 +213,14 @@ void Window::update(bool depth) {
 
   if (!impl_->sprites.size())
     return;
+
   GLuint lastProgram = 0, lastTexture = 0;
+
+  std::ranges::sort(
+      impl_->sprites,
+      [](auto s1, auto s2) { return s1->position.z < s2->position.z; },
+      [](auto &e) { return e.get(); });
+
   for (const auto &sprite : impl_->sprites) {
     if (sprite->shader->id != lastProgram || lastProgram == 0) {
       glUseProgram(lastProgram = sprite->shader->id);
