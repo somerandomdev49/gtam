@@ -264,6 +264,14 @@ class Shader:
     @vertexCount.setter
     def vertexCount(self, value: int):
         self._handle[0].vertexCount = value
+    
+    @property
+    def line(self) -> bool:
+        return not not self._handle[0].line
+
+    @line.setter
+    def line(self, value: bool):
+        self._handle[0].line = value
 
 
 class TextureView:
