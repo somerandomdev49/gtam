@@ -73,10 +73,10 @@ class _CVec4(_ctypes.Structure):
 
 class _CQuat(_ctypes.Structure):
     _fields_ = [
-        ("w", _ctypes.c_float),
         ("x", _ctypes.c_float),
         ("y", _ctypes.c_float),
         ("z", _ctypes.c_float),
+        ("w", _ctypes.c_float),
     ]
 
     def to_glm(self) -> glm.quat:

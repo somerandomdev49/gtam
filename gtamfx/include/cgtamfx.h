@@ -41,7 +41,7 @@ struct GtamVec4d {
   double x, y, z, w;
 };
 struct GtamQuat {
-  double w, x, y, z;
+  double x, y, z, w;
 };
 
 typedef struct GtamWindow_T GtamWindow;

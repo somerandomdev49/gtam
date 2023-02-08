@@ -48,7 +48,8 @@ int main() {
     gtamfx::Window window({800, 600}, "GTAMFX Test!");
     window.init();
 
-    gtamfx::Shader *shader = window.newShader(vertexShaderSource, fragmentShaderSource, 4);
+    gtamfx::Shader *shader =
+        window.newShader(vertexShaderSource, fragmentShaderSource, 4);
     gtamfx::Texture *texture = window.newTexture("example/image.png");
     gtamfx::Sprite *sprite = window.newSprite(texture, shader);
     const float speed = 140.0f;
@@ -57,8 +58,10 @@ int main() {
 
     window.setActiveCamera(camera);
 
+    float a = 0;
+
     float lastTime = window.getTime();
-    while(!window.shouldClose()) {
+    while (!window.shouldClose()) {
       float currentTime = window.getTime();
       float deltaTime = currentTime - lastTime;
 
@@ -66,38 +69,43 @@ int main() {
 
       glm::vec2 movement = {0, 0};
 
-      if(window.isKeyDown(gtamfx::KeyCode::Left)) {
+      if (window.isKeyDown(gtamfx::KeyCode::Left)) {
         movement.x -= 1;
       }
-      
-      if(window.isKeyDown(gtamfx::KeyCode::Right)) {
+
+      if (window.isKeyDown(gtamfx::KeyCode::Right)) {
         movement.x += 1;
       }
 
-      if(window.isKeyDown(gtamfx::KeyCode::Up)) {
+      if (window.isKeyDown(gtamfx::KeyCode::Up)) {
         movement.y += 1;
       }
-      
-      if(window.isKeyDown(gtamfx::KeyCode::Down)) {
+
+      if (window.isKeyDown(gtamfx::KeyCode::Down)) {
         movement.y -= 1;
       }
 
-      if(movement != glm::vec2{0, 0})
-        sprite->position += glm::vec3(glm::normalize(movement) * speed * deltaTime, 0);
+      if (movement != glm::vec2{0, 0})
+        sprite->position +=
+            glm::vec3(glm::normalize(movement) * speed * deltaTime, 0);
+
+      sprite->rotation = glm::angleAxis(a, glm::vec3(0, 0, 1));
+      a += 1.f * deltaTime;
 
       lastTime = currentTime;
     }
 
     window.deinit();
-  } catch(gtamfx::Exception e) {
+  } catch (gtamfx::Exception e) {
     static const char *exceptionTypeStrings[] = {
-      "Failed to initialize GLFW", // GlfwFailedInit
-      "Failed to create GLFW window", // GlfwFailedCreateWindow
-      "Failed to initalize GL3W", // Gl3wFailedInit
-      "OpenGL major version < 2", // Gl3wBadVersion
-      "Failed to load texture", // TextureLoadFail
-      "Failed to load shader" // ShaderLoadFail
+        "Failed to initialize GLFW",    // GlfwFailedInit
+        "Failed to create GLFW window", // GlfwFailedCreateWindow
+        "Failed to initalize GL3W",     // Gl3wFailedInit
+        "OpenGL major version < 2",     // Gl3wBadVersion
+        "Failed to load texture",       // TextureLoadFail
+        "Failed to load shader"         // ShaderLoadFail
     };
-    std::fprintf(stderr, "Error: %s: %s\n", exceptionTypeStrings[(int)e.type], e.message.c_str());
+    std::fprintf(stderr, "Error: %s: %s\n", exceptionTypeStrings[(int)e.type],
+                 e.message.c_str());
   }
 }

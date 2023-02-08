@@ -74,9 +74,9 @@ std::string getGlfwError_() {
 glm::mat4 computeTransformMatrix(const gtamfx::Sprite *sprite,
                                  const gtamfx::Camera *camera) {
   glm::mat4 model = glm::mat4(1.0f);
-  model *= glm::mat4_cast(sprite->rotation);
   model *= glm::translate(glm::mat4(1.0f), sprite->position);
   model *= glm::scale(glm::mat4(1.0f), sprite->scale);
+  model *= glm::mat4_cast(sprite->rotation);
 
   glm::mat4 view = glm::mat4(1.0f);
   view *= glm::mat4_cast(glm::conjugate(camera->rotation));

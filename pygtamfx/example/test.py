@@ -56,26 +56,31 @@ speed = 150
 camera = window.new_camera(CameraType.ORTHOGRAPHIC)
 window.active_camera = camera
 
+a = 0
+
 last_time = window.time
 while not window.should_close:
-  current_time = window.time
-  delta_time = current_time - last_time
+    current_time = window.time
+    delta_time = current_time - last_time
 
-  window.update()
+    window.update()
 
-  movement = glm.vec2(0, 0)
-  if window.is_key_down(KeyCode.RIGHT): movement.x += 1
-  if window.is_key_down(KeyCode.LEFT): movement.x -= 1
-  if window.is_key_down(KeyCode.UP): movement.y += 1
-  if window.is_key_down(KeyCode.DOWN): movement.y -= 1
-  sprite.position += glm.vec3(movement * speed * delta_time, 0)
+    movement = glm.vec2(0, 0)
+    if window.is_key_down(KeyCode.RIGHT):
+        movement.x += 1
+    if window.is_key_down(KeyCode.LEFT):
+        movement.x -= 1
+    if window.is_key_down(KeyCode.UP):
+        movement.y += 1
+    if window.is_key_down(KeyCode.DOWN):
+        movement.y -= 1
 
-  last_time = current_time
+    move = movement * speed * delta_time
+    sprite.position += glm.vec3(move.x, move.y, 0)
+
+    sprite.rotation = glm.angleAxis(a, glm.vec3(0, 0, 1))
+    a += 1.0 * delta_time
+
+    last_time = current_time
 
 window.deinit()
-
-
-
-
-
-
