@@ -36,6 +36,7 @@ struct Texture {
 struct Shader {
   GLuint id;
   size_t vertexCount;
+  bool line;
   struct {
     GLint transform;
     GLint texture;

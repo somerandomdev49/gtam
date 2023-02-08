@@ -1,3 +1,4 @@
+#include "GL/glcorearb.h"
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <algorithm>
@@ -255,6 +256,11 @@ void Window::update(bool depth) {
     //   sprite->shader->vertexCount < 2 ? 0 : sprite->shader->vertexCount - 2
     // );
 
+    if (sprite->shader->line)
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
     glDrawArrays(GL_TRIANGLE_STRIP, 0, sprite->shader->vertexCount);
     reportGlErrors_();
   }
@@ -383,6 +389,7 @@ Shader *Window::newShader(const char *vertex_source,
   Shader *shader = impl_->shaders.back().get();
   shader->id = program;
   shader->vertexCount = vertexCount;
+  shader->line = false;
   shader->uniforms.transform = glGetUniformLocation(program, "uTransform");
   shader->uniforms.texture = glGetUniformLocation(program, "uTexture");
   shader->uniforms.textureView = glGetUniformLocation(program, "uTextureView");

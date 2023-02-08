@@ -97,7 +97,9 @@ class _CTexture(_ctypes.Structure):
 
 
 class _CShader(_ctypes.Structure):
-    _fields_ = [("id", _ctypes.c_uint), ("vertexCount", _ctypes.c_size_t)]
+    _fields_ = [("id", _ctypes.c_uint),
+                ("vertexCount", _ctypes.c_size_t),
+                ("line", _ctypes.c_bool)]
 
 
 class _CTextureView(_ctypes.Structure):

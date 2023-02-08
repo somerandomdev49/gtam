@@ -54,6 +54,7 @@ typedef struct GtamTexture_T {
 typedef struct GtamShader_T {
   unsigned int id;
   size_t vertexCount;
+  bool line;
 } GtamShader;
 
 struct GtamTextureView {
