@@ -261,7 +261,11 @@ void Window::update(bool depth) {
     else
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, sprite->shader->vertexCount);
+    if (sprite->shader->vertexCount >= 3) {
+      glDrawArrays(GL_TRIANGLE_STRIP, 0, sprite->shader->vertexCount);
+    } else if (sprite->shader->vertexCount == 2) {
+      glDrawArrays(GL_LINES, 0, 2);
+    }
     reportGlErrors_();
   }
   glfwSwapBuffers(impl_->window);
