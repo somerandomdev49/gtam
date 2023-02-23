@@ -241,12 +241,12 @@ class Texture:
         self._handle = handle
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self._handle[0].id
 
     @property
     def size(self):
-        return self._handle[0].size
+        return self._handle[0].size.to_glm()
 
 
 class Shader:
@@ -280,12 +280,11 @@ class TextureView:
 
     @property
     def position(self) -> glm.vec2:
-        return glm.vec2(self._handle.position.x, self._handle.position.y)
+        return self._handle.position.to_glm()
 
     @position.setter
     def position(self, value: glm.vec2):
-        self._handle.position.x = _ctypes.c_float(value.x)
-        self._handle.position.y = _ctypes.c_float(value.y)
+        self._handle.position.set_from_glm(value)
 
     @property
     def scale(self) -> glm.vec2:
